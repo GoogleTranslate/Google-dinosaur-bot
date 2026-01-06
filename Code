@@ -1,0 +1,35 @@
+#include <Servo.h>
+
+#define SERVO_PIN 9
+#define LDR_PIN A0
+
+Servo myServo;
+
+int lastLight = 0;
+int angle = 0;
+
+// how much the light must change to trigger movement
+int threshold = 50;
+
+void setup() {
+  myServo.attach(SERVO_PIN);
+  myServo.write(angle);
+
+  lastLight = analogRead(LDR_PIN);
+}
+
+void loop() {
+  int light = analogRead(LDR_PIN);
+
+  // detect meaningful change in light
+  if (abs(light - lastLight) > threshold) {
+
+    angle += 30;
+    if (angle > 180) angle = 0;
+
+    myServo.write(angle);
+    lastLight = light;
+
+    delay(300); // debounce
+  }
+}
